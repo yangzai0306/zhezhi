@@ -45,9 +45,9 @@
       animation: floatTriangle 14s ease-in-out infinite;
     }
     .header-accents .triangle:nth-child(1){ top:60px; left:8%; border-bottom-color:rgba(199,91,58,0.16); }
-    .header-accents .triangle:nth-child(2){ top:130px; right:10%; border-bottom-color:rgba(212,168,83,0.18); animation-delay:-5s; }
-    .header-accents .triangle:nth-child(3){ top:200px; left:18%; border-bottom-color:rgba(125,168,123,0.14); animation-delay:-9s; }
-    .header-accents .triangle:nth-child(4){ top:90px; right:22%; border-bottom-color:rgba(180,140,120,0.15); animation-delay:-3s; }
+    .header-accents .triangle:nth-child(2){ top:130px; right:10%; border-bottom-color:rgba(212,168,83,0.18); animation-delay:-5s; border-left-width:16px; border-right-width:16px; border-bottom-width:28px; }
+    .header-accents .triangle:nth-child(3){ top:200px; left:18%; border-bottom-color:rgba(125,168,123,0.14); animation-delay:-9s; border-left-width:18px; border-right-width:18px; border-bottom-width:32px; }
+    .header-accents .triangle:nth-child(4){ top:90px; right:22%; border-bottom-color:rgba(180,140,120,0.15); animation-delay:-3s; border-left-width:14px; border-right-width:14px; border-bottom-width:24px; }
     @keyframes floatTriangle { 0%,100%{transform:translateY(0) rotate(0deg);} 25%{transform:translateY(-18px) rotate(3deg);} 50%{transform:translateY(-6px) rotate(-2deg);} 75%{transform:translateY(-22px) rotate(1deg);} }
 
     .app-container { position:relative; z-index:1; max-width:1100px; margin:0 auto; padding:0 20px; }
@@ -77,7 +77,7 @@
     .hidden-admin { display: none !important; }
 
     .works-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(310px, 1fr)); gap:26px; padding-bottom:40px; }
-    .work-card { background:var(--card-bg); border-radius:var(--radius-lg); overflow:hidden; cursor:pointer; transition:var(--transition); box-shadow:var(--shadow-sm); border:1px solid var(--border); display:flex; flex-direction:column; height:100%; }
+    .work-card { background:var(--card-bg); border-radius:var(--radius-lg); overflow:hidden; cursor:pointer; transition:var(--transition); box-shadow:var(--shadow-sm); border:1px solid var(--border); position:relative; display:flex; flex-direction:column; height:100%; }
     .work-card:hover { box-shadow:var(--shadow-lg); transform:translateY(-6px); border-color:#dcd3c5; }
     .card-image { width:100%; height:200px; object-fit:cover; background:#f5f0e9; }
     .card-placeholder { width:100%; height:200px; display:flex; align-items:center; justify-content:center; font-size:2.4rem; font-weight:700; color:#fff; background:#d9c8b4; }
@@ -91,13 +91,22 @@
     .tag-hard { background:#fde8e4; color:#a84a35; }
     .tag-time { background:#f3f0eb; color:#6b5e53; }
     .tag-category { background:#eef3f8; color:#4a6580; }
-    .card-delete-btn {
-      position:absolute; top:10px; right:10px; width:32px; height:32px; border-radius:50%;
+    .card-actions {
+      position:absolute; top:10px; right:10px; display:flex; gap:6px; z-index:3;
+    }
+    .card-edit-btn, .card-delete-btn {
+      width:32px; height:32px; border-radius:50%;
       background:rgba(255,255,255,0.9); border:1px solid #e0d8cc; cursor:pointer;
       font-size:0.85rem; color:#b0a090; display:flex; align-items:center; justify-content:center;
-      transition:0.2s; z-index:3; backdrop-filter:blur(4px);
+      transition:0.2s; backdrop-filter:blur(4px);
     }
+    .card-edit-btn:hover { background:#eef3f8; color:#4a6580; border-color:#c0d0e0; }
     .card-delete-btn:hover { background:#fde8e4; color:#c75b3a; border-color:#f0c4b8; }
+    .detail-edit-btn {
+      background: #f5f0e9; border: 1px solid #d5ccc0; padding: 8px 18px; border-radius: 30px;
+      cursor:pointer; font-size:0.9rem; color:#6b5e53; margin-bottom: 14px; transition:0.2s;
+    }
+    .detail-edit-btn:hover { background:#e8e0d5; }
 
     .empty-state { text-align:center; padding:60px 20px; color:var(--text-lighter); grid-column:1/-1; }
     .empty-state .empty-icon { font-size:80px; display:block; margin-bottom:16px; opacity:0.7; }
@@ -188,7 +197,7 @@
   <div class="modal" id="formModalInner">
     <button class="modal-close" id="formModalClose">✕</button>
     <div class="modal-content">
-      <h2>✨ 添加新作品</h2>
+      <h2 id="formModalTitle">✨ 添加新作品</h2>
       <form id="workForm" autocomplete="off">
         <div class="form-group"><label>作品名称 *</label><input type="text" id="workName" required placeholder="如：千纸鹤"></div>
         <div class="form-group"><label>作品图片</label><input type="file" id="workImageUpload" accept="image/*"><div id="workImagePreview" style="margin-top:8px;"></div></div>
@@ -209,7 +218,7 @@
   (function() {
     const STORAGE_KEY = 'origami_works_v2';
     const MAX_IMAGE_MB = 1.5;
-    const ADMIN_PASSWORD = 'origami2025'; // 请修改为你自己的密码
+    const ADMIN_PASSWORD = 'cqmyg';  // 管理员密码
 
     const PRESET_WORKS = [
       { id:'preset-crane', name:'千纸鹤', difficulty:'中等', time:'约20分钟', description:'最经典的折纸作品，象征和平与希望。', color:'#e8cfc2', imageUrl:'', tags:['经典','动物'], steps:[{text:'准备正方形纸，对角线对折后展开。',imageUrl:''},{text:'换另一条对角线对折后展开。',imageUrl:''},{text:'翻面，沿水平和垂直中线对折后展开，形成米字折痕。',imageUrl:''},{text:'收拢成双正方形。',imageUrl:''},{text:'上层左右侧边向中线对折。',imageUrl:''},{text:'顶部小三角向下折。',imageUrl:''},{text:'展开并翻起上层纸（花瓣折）。',imageUrl:''},{text:'翻面重复步骤5-7。',imageUrl:''},{text:'两侧边再次向中线对折，翻面重复。',imageUrl:''},{text:'将一端尖角向上折成头部。',imageUrl:''},{text:'拉动翅膀整形。',imageUrl:''}], createdAt:1700000000 },
@@ -219,6 +228,7 @@
 
     let works = loadWorks();
     let isAdmin = false;
+    let currentEditWorkId = null; // 正在编辑的作品ID，null表示新增
 
     function loadWorks() {
       try {
@@ -240,6 +250,7 @@
     const detailModal = document.getElementById('detailModal');
     const detailContent = document.getElementById('detailModalContent');
     const formModal = document.getElementById('formModal');
+    const formModalTitle = document.getElementById('formModalTitle');
     const workForm = document.getElementById('workForm');
     const stepsEditor = document.getElementById('stepsEditor');
     const toast = document.getElementById('toast');
@@ -256,10 +267,8 @@
     function escapeHtml(s) { const d=document.createElement('div'); d.textContent=s||''; return d.innerHTML; }
 
     function updateAdminUI() {
-      const adminBtns = [btnAddWork, btnReset];
-      adminBtns.forEach(b => b.classList.toggle('hidden-admin', !isAdmin));
+      [btnAddWork, btnReset].forEach(b => b.classList.toggle('hidden-admin', !isAdmin));
       btnAdmin.innerHTML = isAdmin ? '🔓 退出管理' : '🔑 管理员';
-      // 重新渲染以显示/隐藏删除按钮
       refreshDisplay();
     }
 
@@ -276,7 +285,11 @@
         card.innerHTML = `
           ${hasImg ? `<img class="card-image" src="${escapeHtml(work.imageUrl)}" alt="${escapeHtml(work.name)}">` : ''}
           ${!hasImg ? `<div class="card-placeholder" style="background:${work.color||'#d9c8b4'}">${escapeHtml(work.name).charAt(0)}</div>` : ''}
-          ${isAdmin ? `<button class="card-delete-btn" data-delete-id="${work.id}">🗑️</button>` : ''}
+          ${isAdmin ? `
+          <div class="card-actions">
+            <button class="card-edit-btn" data-edit-id="${work.id}" title="编辑">✏️</button>
+            <button class="card-delete-btn" data-delete-id="${work.id}" title="删除">🗑️</button>
+          </div>` : ''}
           <div class="card-body">
             <div class="card-name">${escapeHtml(work.name)}</div>
             <div class="card-desc">${escapeHtml(work.description||'')}</div>
@@ -287,19 +300,27 @@
             </div>
           </div>`;
         card.addEventListener('click', e => {
-          if (e.target.closest('.card-delete-btn')) return;
+          if (e.target.closest('.card-edit-btn') || e.target.closest('.card-delete-btn')) return;
           openDetail(work);
         });
         worksGrid.appendChild(card);
       });
-      if (isAdmin) {
-        document.querySelectorAll('.card-delete-btn').forEach(btn => {
-          btn.addEventListener('click', e => {
-            e.stopPropagation();
-            confirmDelete(btn.getAttribute('data-delete-id'));
-          });
+
+      // 绑定管理员按钮事件
+      document.querySelectorAll('.card-edit-btn').forEach(btn => {
+        btn.addEventListener('click', e => {
+          e.stopPropagation();
+          const workId = btn.getAttribute('data-edit-id');
+          const work = works.find(w => w.id === workId);
+          if (work) openEditForm(work);
         });
-      }
+      });
+      document.querySelectorAll('.card-delete-btn').forEach(btn => {
+        btn.addEventListener('click', e => {
+          e.stopPropagation();
+          confirmDelete(btn.getAttribute('data-delete-id'));
+        });
+      });
     }
 
     function getFilteredWorks() {
@@ -324,9 +345,17 @@
         ${work.imageUrl ? `<div class="modal-image-area"><img src="${escapeHtml(work.imageUrl)}"></div>` : `<div class="modal-image-area" style="background:${work.color||'#d9c8b4'}">${escapeHtml(work.name).charAt(0)}</div>`}
         <h2>${escapeHtml(work.name)}</h2>
         <div class="modal-meta"><span class="tag tag-${work.difficulty==='简单'?'easy':work.difficulty==='中等'?'medium':'hard'}">${work.difficulty}</span> ${work.time?`<span class="tag tag-time">⏱ ${work.time}</span>`:''}</div>
+        ${isAdmin ? `<button class="detail-edit-btn" id="detailEditBtn">✏️ 编辑作品</button>` : ''}
         <p class="modal-desc">${escapeHtml(work.description||'')}</p>
         <div class="steps-title">📋 步骤 (${work.steps?.length||0})</div>
         <div>${stepsHtml||'<p>暂无步骤</p>'}</div>`;
+      
+      if (isAdmin) {
+        document.getElementById('detailEditBtn').addEventListener('click', () => {
+          closeDetail();
+          openEditForm(work);
+        });
+      }
       detailModal.style.display = 'flex';
     }
 
@@ -334,24 +363,97 @@
     document.getElementById('detailModalClose').addEventListener('click', closeDetail);
     detailModal.addEventListener('click', e => { if(e.target===detailModal) closeDetail(); });
 
-    function openForm() {
-      formModal.style.display = 'flex';
+    // ---- 表单相关 ----
+    function openAddForm() {
+      currentEditWorkId = null;
+      formModalTitle.textContent = '✨ 添加新作品';
       resetForm();
+      formModal.style.display = 'flex';
     }
+
+    function openEditForm(work) {
+      currentEditWorkId = work.id;
+      formModalTitle.textContent = '✏️ 编辑作品';
+      populateForm(work);
+      formModal.style.display = 'flex';
+    }
+
+    function populateForm(work) {
+      document.getElementById('workName').value = work.name || '';
+      document.getElementById('workDifficulty').value = work.difficulty || '中等';
+      document.getElementById('workTime').value = work.time || '';
+      document.getElementById('workDesc').value = work.description || '';
+      document.getElementById('workTags').value = (work.tags || []).join(', ');
+
+      // 主图
+      workImageDataUrl = work.imageUrl || '';
+      workImageUpload.value = '';
+      workImagePreview.innerHTML = '';
+      if (workImageDataUrl) {
+        workImagePreview.innerHTML = `<img src="${workImageDataUrl}" style="height:60px;border-radius:8px;"> <button type="button" id="removeWorkImage">移除</button>`;
+        document.getElementById('removeWorkImage').onclick = () => {
+          workImageDataUrl = '';
+          workImageUpload.value = '';
+          workImagePreview.innerHTML = '';
+        };
+      }
+
+      // 步骤编辑器
+      const steps = work.steps && work.steps.length ? work.steps : [{text:'',imageUrl:''}];
+      stepsEditor.innerHTML = '';
+      steps.forEach((s, i) => stepsEditor.appendChild(createStepRow(s, i)));
+    }
+
+    function resetForm() {
+      workForm.reset();
+      document.getElementById('workDifficulty').value = '中等';
+      document.getElementById('workTime').value = '约20分钟';
+      workImageUpload.value = '';
+      workImagePreview.innerHTML = '';
+      workImageDataUrl = '';
+      currentEditWorkId = null;
+      stepsEditor.innerHTML = '';
+      stepsEditor.appendChild(createStepRow({text:'',imageUrl:''}, 0));
+      stepsEditor.appendChild(createStepRow({text:'',imageUrl:''}, 1));
+    }
+
     function closeForm() { formModal.style.display = 'none'; }
     document.getElementById('formModalClose').addEventListener('click', closeForm);
     formModal.addEventListener('click', e => { if(e.target===formModal) closeForm(); });
 
     workImageUpload.addEventListener('change', function() {
       const file = this.files[0];
-      workImagePreview.innerHTML = ''; workImageDataUrl = '';
-      if (!file) return;
+      workImagePreview.innerHTML = '';
+      if (!file) {
+        if (currentEditWorkId) {
+          // 编辑模式下如果用户不选新文件，保留原图
+          const work = works.find(w => w.id === currentEditWorkId);
+          if (work && work.imageUrl) {
+            workImageDataUrl = work.imageUrl;
+            workImagePreview.innerHTML = `<img src="${workImageDataUrl}" style="height:60px;border-radius:8px;"> <button type="button" id="removeWorkImage">移除</button>`;
+            document.getElementById('removeWorkImage').onclick = () => {
+              workImageDataUrl = '';
+              workImageUpload.value = '';
+              workImagePreview.innerHTML = '';
+            };
+          } else {
+            workImageDataUrl = '';
+          }
+        } else {
+          workImageDataUrl = '';
+        }
+        return;
+      }
       if (file.size > MAX_IMAGE_MB*1024*1024) { showToast('图片过大','error'); return; }
       const reader = new FileReader();
       reader.onload = e => {
         workImageDataUrl = e.target.result;
         workImagePreview.innerHTML = `<img src="${workImageDataUrl}" style="height:60px;border-radius:8px;"> <button type="button" id="removeWorkImage">移除</button>`;
-        document.getElementById('removeWorkImage').onclick = ()=>{ workImageDataUrl=''; workImageUpload.value=''; workImagePreview.innerHTML=''; };
+        document.getElementById('removeWorkImage').onclick = () => {
+          workImageDataUrl = '';
+          workImageUpload.value = '';
+          workImagePreview.innerHTML = '';
+        };
       };
       reader.readAsDataURL(file);
     });
@@ -369,7 +471,12 @@
         </div>`;
       const fileInput = row.querySelector('.step-file');
       const preview = row.querySelector('.step-image-preview');
-      row.querySelector('label').addEventListener('click', (e)=>{ e.preventDefault(); fileInput.click(); });
+      const label = row.querySelector('label');
+
+      // 初始化 data 属性存储图片
+      if (data.imageUrl) row.setAttribute('data-step-image', data.imageUrl);
+
+      label.addEventListener('click', (e) => { e.preventDefault(); fileInput.click(); });
       fileInput.addEventListener('change', function() {
         const f = this.files[0];
         if (!f) return;
@@ -382,24 +489,22 @@
         };
         r.readAsDataURL(f);
       });
-      row.querySelector('.btn-step-remove').addEventListener('click', ()=>{
-        if (stepsEditor.children.length<=1) { showToast('至少保留一步','error'); return; }
-        row.remove(); refreshStepNums();
+      row.querySelector('.btn-step-remove').addEventListener('click', () => {
+        if (stepsEditor.children.length <= 1) { showToast('至少保留一步','error'); return; }
+        row.remove();
+        refreshStepNums();
       });
-      if (data.imageUrl) row.setAttribute('data-step-image', data.imageUrl);
       return row;
     }
+
     function refreshStepNums() {
-      [...stepsEditor.children].forEach((r,i) => {
+      [...stepsEditor.children].forEach((r, i) => {
         r.querySelector('.step-number-small').textContent = i+1;
         r.querySelector('.step-input-text').placeholder = `步骤${i+1}...`;
       });
     }
-    function initStepsEditor(arr=[{text:''},{text:''}]) {
-      stepsEditor.innerHTML = '';
-      arr.forEach((s,i) => stepsEditor.appendChild(createStepRow(s,i)));
-    }
-    document.getElementById('btnAddStep').addEventListener('click', ()=>{
+
+    document.getElementById('btnAddStep').addEventListener('click', () => {
       stepsEditor.appendChild(createStepRow({}, stepsEditor.children.length));
     });
 
@@ -409,13 +514,6 @@
         imageUrl: row.getAttribute('data-step-image') || ''
       })).filter(s => s.text);
     }
-    function resetForm() {
-      workForm.reset();
-      document.getElementById('workDifficulty').value = '中等';
-      document.getElementById('workTime').value = '约20分钟';
-      workImageUpload.value = ''; workImagePreview.innerHTML = ''; workImageDataUrl = '';
-      initStepsEditor([{text:''},{text:''}]);
-    }
 
     workForm.addEventListener('submit', e => {
       e.preventDefault();
@@ -423,9 +521,9 @@
       const steps = getStepsFromEditor();
       if (!name) { showToast('请输入名称','error'); return; }
       if (!steps.length) { showToast('至少添加一个步骤','error'); return; }
+
       const colorMap = { '简单':'#c3d9b7', '中等':'#e8cfc2', '困难':'#e0c8c8' };
-      const newWork = {
-        id: 'user-'+Date.now(),
+      const workData = {
         name,
         difficulty: document.getElementById('workDifficulty').value,
         time: document.getElementById('workTime').value.trim(),
@@ -434,13 +532,33 @@
         imageUrl: workImageDataUrl,
         tags: document.getElementById('workTags').value.split(/[,，]/).map(t=>t.trim()).filter(t=>t),
         steps,
-        createdAt: Date.now()
       };
-      works.unshift(newWork);
-      saveWorks(works);
-      refreshDisplay();
-      closeForm();
-      showToast('✅ 作品添加成功','success');
+
+      if (currentEditWorkId) {
+        // 编辑模式
+        const index = works.findIndex(w => w.id === currentEditWorkId);
+        if (index !== -1) {
+          works[index] = { ...works[index], ...workData };
+          saveWorks(works);
+          refreshDisplay();
+          closeForm();
+          showToast('✅ 作品已更新','success');
+        } else {
+          showToast('找不到该作品','error');
+        }
+      } else {
+        // 新增模式
+        const newWork = {
+          ...workData,
+          id: 'user-'+Date.now(),
+          createdAt: Date.now()
+        };
+        works.unshift(newWork);
+        saveWorks(works);
+        refreshDisplay();
+        closeForm();
+        showToast('✅ 作品添加成功','success');
+      }
       resetForm();
     });
 
@@ -454,7 +572,7 @@
       }
     }
 
-    btnAddWork.addEventListener('click', openForm);
+    btnAddWork.addEventListener('click', openAddForm);
     btnAdmin.addEventListener('click', () => {
       if (isAdmin) {
         isAdmin = false;
@@ -471,7 +589,7 @@
       }
     });
 
-    btnReset.addEventListener('click', ()=>{
+    btnReset.addEventListener('click', () => {
       if (confirm('恢复预设作品？当前数据将被替换。')) {
         works = JSON.parse(JSON.stringify(PRESET_WORKS));
         saveWorks(works);
@@ -508,7 +626,7 @@
       detailModal.style.display = 'none';
     }
     init();
-    console.log('🦢 折纸作品集已启动 (管理模式)');
+    console.log('🦢 折纸作品集已启动 (编辑功能版)');
   })();
 </script>
 </body>
