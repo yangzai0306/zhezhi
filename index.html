@@ -36,6 +36,8 @@
       background-image:
         radial-gradient(ellipse at 15% 10%, rgba(212,168,83,0.06) 0%, transparent 55%),
         radial-gradient(ellipse at 85% 90%, rgba(199,91,58,0.05) 0%, transparent 55%);
+      display: flex;
+      flex-direction: column;
     }
     .header-accents { position:fixed; top:0; left:0; width:100%; pointer-events:none; z-index:0; opacity:0.55; }
     .header-accents .triangle {
@@ -50,7 +52,7 @@
     .header-accents .triangle:nth-child(4){ top:90px; right:22%; border-bottom-color:rgba(180,140,120,0.15); animation-delay:-3s; border-left-width:14px; border-right-width:14px; border-bottom-width:24px; }
     @keyframes floatTriangle { 0%,100%{transform:translateY(0) rotate(0deg);} 25%{transform:translateY(-18px) rotate(3deg);} 50%{transform:translateY(-6px) rotate(-2deg);} 75%{transform:translateY(-22px) rotate(1deg);} }
 
-    .app-container { position:relative; z-index:1; max-width:1100px; margin:0 auto; padding:0 20px; }
+    .app-container { position:relative; z-index:1; max-width:1100px; margin:0 auto; padding:0 20px; flex:1; }
 
     .header { text-align:center; padding:48px 20px 28px; }
     .header .logo-icon { font-size:56px; display:inline-block; animation:gentleBounce 3s ease-in-out infinite; filter:drop-shadow(0 4px 12px rgba(199,91,58,0.2)); }
@@ -91,7 +93,9 @@
     .tag-hard { background:#fde8e4; color:#a84a35; }
     .tag-time { background:#f3f0eb; color:#6b5e53; }
     .tag-category { background:#eef3f8; color:#4a6580; }
-    .card-actions { position:absolute; top:10px; right:10px; display:flex; gap:6px; z-index:3; }
+    .card-actions {
+      position:absolute; top:10px; right:10px; display:flex; gap:6px; z-index:3;
+    }
     .card-edit-btn, .card-delete-btn {
       width:32px; height:32px; border-radius:50%;
       background:rgba(255,255,255,0.9); border:1px solid #e0d8cc; cursor:pointer;
@@ -100,6 +104,11 @@
     }
     .card-edit-btn:hover { background:#eef3f8; color:#4a6580; border-color:#c0d0e0; }
     .card-delete-btn:hover { background:#fde8e4; color:#c75b3a; border-color:#f0c4b8; }
+    .detail-edit-btn {
+      background: #f5f0e9; border: 1px solid #d5ccc0; padding: 8px 18px; border-radius: 30px;
+      cursor:pointer; font-size:0.9rem; color:#6b5e53; margin-bottom: 14px; transition:0.2s;
+    }
+    .detail-edit-btn:hover { background:#e8e0d5; }
 
     .empty-state { text-align:center; padding:60px 20px; color:var(--text-lighter); grid-column:1/-1; }
     .empty-state .empty-icon { font-size:80px; display:block; margin-bottom:16px; opacity:0.7; }
@@ -139,122 +148,27 @@
     .btn-add-step { padding:8px 16px; border-radius:20px; background:transparent; border:1.5px dashed #c5b8a8; cursor:pointer; }
     .btn-submit { width:100%; padding:13px; border-radius:50px; background:var(--accent); color:#fff; border:none; font-weight:600; box-shadow:0 4px 16px rgba(199,91,58,0.3); cursor:pointer; margin-top:8px; }
 
-    .toast { position:fixed; bottom:30px; left:50%; transform:translateX(-50%); background:#3d322b; color:#fff; padding:12px 24px; border-radius:50px; z-index:200; transition:0.35s; pointer-events:none; }
+    .toast { position:fixed; bottom:30px; left:50%; transform:translateX(-50%); background:#3d322b; color:#fff; padding:12px 24px; border-radius:50px; z-index:200; transition:0.35s; }
     .toast.show { transform:translateX(-50%) translateY(0); }
     .toast.success { background:#4a7a48; }
     .toast.error { background:#c75b3a; }
 
-    /* 留言区样式 */
-    .comments-section {
-      margin-top: 50px;
-      padding: 30px 20px;
-      background: var(--card-bg);
-      border-radius: var(--radius-lg);
-      box-shadow: var(--shadow-sm);
-      border: 1px solid var(--border);
-      margin-bottom: 40px;
-    }
-    .comments-title {
-      font-family: var(--font-heading);
-      font-size: 1.5rem;
-      font-weight: 700;
-      margin-bottom: 20px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      color: var(--text);
-    }
-    .comment-form {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-bottom: 28px;
-    }
-    .comment-form input {
-      flex: 1 1 180px;
-      padding: 10px 14px;
-      border: 2px solid var(--border);
-      border-radius: 30px;
-      font-size: 0.9rem;
-      background: var(--bg);
-      outline: none;
-      transition: var(--transition);
-    }
-    .comment-form input:focus { border-color: var(--accent); }
-    .comment-form textarea {
-      flex: 2 1 300px;
-      padding: 10px 14px;
-      border: 2px solid var(--border);
-      border-radius: 20px;
-      font-size: 0.9rem;
-      background: var(--bg);
-      outline: none;
-      resize: vertical;
-      min-height: 44px;
-      font-family: var(--font-body);
-      transition: var(--transition);
-    }
-    .comment-form textarea:focus { border-color: var(--accent); }
-    .comment-form button {
-      padding: 10px 24px;
-      border-radius: 30px;
-      background: var(--accent);
-      color: #fff;
-      border: none;
-      cursor: pointer;
-      font-weight: 600;
-      transition: var(--transition);
-      white-space: nowrap;
-      height: 44px;
-    }
-    .comment-form button:hover { background: var(--accent-hover); }
-    .comments-list { display: flex; flex-direction: column; gap: 16px; }
-    .comment-item {
-      background: #fdfbf7;
-      border-radius: 12px;
-      padding: 14px 18px;
-      border: 1px solid #f0ebe0;
-      transition: 0.2s;
-    }
-    .comment-item:hover { border-color: #ddd5c8; }
-    .comment-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 6px;
-      font-size: 0.8rem;
-      color: var(--text-lighter);
-    }
-    .comment-nickname {
-      font-weight: 600;
-      color: var(--text);
-      font-size: 0.9rem;
-    }
-    .comment-time { font-size: 0.75rem; }
-    .comment-body {
-      font-size: 0.95rem;
-      color: var(--text);
-      line-height: 1.5;
-      word-break: break-word;
-    }
-    .toggle-old-comments {
+    /* 底部联系信息 */
+    .site-footer {
       text-align: center;
-      margin-top: 12px;
+      padding: 24px 20px 32px;
+      color: var(--text-lighter);
+      font-size: 0.9rem;
+      border-top: 1px solid var(--border);
+      margin-top: 20px;
     }
-    .toggle-old-comments button {
-      background: transparent;
-      border: 1.5px dashed #c5b8a8;
-      padding: 8px 20px;
-      border-radius: 20px;
-      cursor: pointer;
-      color: var(--text-light);
-      font-size: 0.85rem;
-      transition: 0.2s;
-    }
-    .toggle-old-comments button:hover {
-      border-color: var(--accent);
+    .site-footer a {
       color: var(--accent);
-      background: #fefaf7;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .site-footer a:hover {
+      text-decoration: underline;
     }
   </style>
 </head>
@@ -266,7 +180,7 @@
 <div class="app-container">
   <header class="header">
     <div class="logo-icon">🦢</div>
-    <h1>折纸作品集</h1>
+    <h1>运仔的折纸作品集</h1>
     <p class="subtitle">每一道折痕，都是时光的印记</p>
     <div class="divider"></div>
   </header>
@@ -289,17 +203,10 @@
 
   <div class="works-grid" id="worksGrid"></div>
 
-  <!-- 留言区 -->
-  <section class="comments-section">
-    <div class="comments-title">💬 留言板</div>
-    <div class="comment-form" id="commentForm">
-      <input type="text" id="commentNickname" placeholder="你的昵称（选填）" maxlength="20">
-      <textarea id="commentText" rows="1" placeholder="写下你的留言..." required></textarea>
-      <button type="submit" id="commentSubmit">发布</button>
-    </div>
-    <div class="comments-list" id="commentsList"></div>
-    <div class="toggle-old-comments" id="toggleOldComments" style="display:none;"></div>
-  </section>
+  <!-- 底部联系信息 -->
+  <footer class="site-footer">
+    <p>Contact us: <a href="mailto:359283484@qq.com">359283484@qq.com</a></p>
+  </footer>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -335,9 +242,8 @@
 <script>
   (function() {
     const STORAGE_KEY = 'origami_works_v2';
-    const COMMENTS_KEY = 'origami_comments';
     const MAX_IMAGE_MB = 1.5;
-    const ADMIN_PASSWORD = 'cqmyg';
+    const ADMIN_PASSWORD = 'cqmyg';  // 管理员密码
 
     const PRESET_WORKS = [
       { id:'preset-crane', name:'千纸鹤', difficulty:'中等', time:'约20分钟', description:'最经典的折纸作品，象征和平与希望。', color:'#e8cfc2', imageUrl:'', tags:['经典','动物'], steps:[{text:'准备正方形纸，对角线对折后展开。',imageUrl:''},{text:'换另一条对角线对折后展开。',imageUrl:''},{text:'翻面，沿水平和垂直中线对折后展开，形成米字折痕。',imageUrl:''},{text:'收拢成双正方形。',imageUrl:''},{text:'上层左右侧边向中线对折。',imageUrl:''},{text:'顶部小三角向下折。',imageUrl:''},{text:'展开并翻起上层纸（花瓣折）。',imageUrl:''},{text:'翻面重复步骤5-7。',imageUrl:''},{text:'两侧边再次向中线对折，翻面重复。',imageUrl:''},{text:'将一端尖角向上折成头部。',imageUrl:''},{text:'拉动翅膀整形。',imageUrl:''}], createdAt:1700000000 },
@@ -346,10 +252,8 @@
     ];
 
     let works = loadWorks();
-    let comments = loadComments();
     let isAdmin = false;
     let currentEditWorkId = null;
-    let showAllComments = false; // 是否展开全部留言
 
     function loadWorks() {
       try {
@@ -361,15 +265,6 @@
       return init;
     }
     function saveWorks(data) { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }
-
-    function loadComments() {
-      try {
-        const raw = localStorage.getItem(COMMENTS_KEY);
-        if (raw) return JSON.parse(raw);
-      } catch(e){}
-      return [];
-    }
-    function saveComments() { localStorage.setItem(COMMENTS_KEY, JSON.stringify(comments)); }
 
     const worksGrid = document.getElementById('worksGrid');
     const searchInput = document.getElementById('searchInput');
@@ -386,12 +281,6 @@
     const toast = document.getElementById('toast');
     const workImageUpload = document.getElementById('workImageUpload');
     const workImagePreview = document.getElementById('workImagePreview');
-    const commentsList = document.getElementById('commentsList');
-    const commentForm = document.getElementById('commentForm');
-    const commentNickname = document.getElementById('commentNickname');
-    const commentText = document.getElementById('commentText');
-    const toggleOldComments = document.getElementById('toggleOldComments');
-
     let currentFilter = 'all', toastTimer, workImageDataUrl = '';
 
     function showToast(msg, type='') {
@@ -484,6 +373,7 @@
         <p class="modal-desc">${escapeHtml(work.description||'')}</p>
         <div class="steps-title">📋 步骤 (${work.steps?.length||0})</div>
         <div>${stepsHtml||'<p>暂无步骤</p>'}</div>`;
+      
       if (isAdmin) {
         document.getElementById('detailEditBtn').addEventListener('click', () => {
           closeDetail();
@@ -517,6 +407,7 @@
       document.getElementById('workTime').value = work.time || '';
       document.getElementById('workDesc').value = work.description || '';
       document.getElementById('workTags').value = (work.tags || []).join(', ');
+
       workImageDataUrl = work.imageUrl || '';
       workImageUpload.value = '';
       workImagePreview.innerHTML = '';
@@ -528,6 +419,7 @@
           workImagePreview.innerHTML = '';
         };
       }
+
       const steps = work.steps && work.steps.length ? work.steps : [{text:'',imageUrl:''}];
       stepsEditor.innerHTML = '';
       steps.forEach((s, i) => stepsEditor.appendChild(createStepRow(s, i)));
@@ -564,8 +456,12 @@
               workImageUpload.value = '';
               workImagePreview.innerHTML = '';
             };
-          } else { workImageDataUrl = ''; }
-        } else { workImageDataUrl = ''; }
+          } else {
+            workImageDataUrl = '';
+          }
+        } else {
+          workImageDataUrl = '';
+        }
         return;
       }
       if (file.size > MAX_IMAGE_MB*1024*1024) { showToast('图片过大','error'); return; }
@@ -596,7 +492,9 @@
       const fileInput = row.querySelector('.step-file');
       const preview = row.querySelector('.step-image-preview');
       const label = row.querySelector('label');
+
       if (data.imageUrl) row.setAttribute('data-step-image', data.imageUrl);
+
       label.addEventListener('click', (e) => { e.preventDefault(); fileInput.click(); });
       fileInput.addEventListener('change', function() {
         const f = this.files[0];
@@ -663,9 +561,15 @@
           refreshDisplay();
           closeForm();
           showToast('✅ 作品已更新','success');
-        } else { showToast('找不到该作品','error'); }
+        } else {
+          showToast('找不到该作品','error');
+        }
       } else {
-        const newWork = { ...workData, id: 'user-'+Date.now(), createdAt: Date.now() };
+        const newWork = {
+          ...workData,
+          id: 'user-'+Date.now(),
+          createdAt: Date.now()
+        };
         works.unshift(newWork);
         saveWorks(works);
         refreshDisplay();
@@ -685,71 +589,6 @@
       }
     }
 
-    // ---------- 留言功能 ----------
-    function renderComments() {
-      if (!comments.length) {
-        commentsList.innerHTML = '<p style="color:var(--text-lighter);text-align:center;padding:10px;">暂无留言，来发表第一条吧 ✨</p>';
-        toggleOldComments.style.display = 'none';
-        return;
-      }
-      const sorted = [...comments].sort((a,b) => b.timestamp - a.timestamp);
-      const visible = showAllComments ? sorted : sorted.slice(0, 5);
-      const html = visible.map(c => `
-        <div class="comment-item">
-          <div class="comment-header">
-            <span class="comment-nickname">${escapeHtml(c.nickname || '匿名')}</span>
-            <span class="comment-time">${new Date(c.timestamp).toLocaleString('zh-CN')}</span>
-          </div>
-          <div class="comment-body">${escapeHtml(c.text)}</div>
-        </div>
-      `).join('');
-      commentsList.innerHTML = html;
-
-      if (sorted.length > 5 && !showAllComments) {
-        toggleOldComments.style.display = 'block';
-        toggleOldComments.innerHTML = `<button id="showAllCommentsBtn">查看更早的留言 (${sorted.length - 5}条)</button>`;
-        document.getElementById('showAllCommentsBtn').addEventListener('click', () => {
-          showAllComments = true;
-          renderComments();
-        });
-      } else if (sorted.length > 5 && showAllComments) {
-        toggleOldComments.style.display = 'block';
-        toggleOldComments.innerHTML = `<button id="collapseCommentsBtn">收起更早的留言</button>`;
-        document.getElementById('collapseCommentsBtn').addEventListener('click', () => {
-          showAllComments = false;
-          renderComments();
-        });
-      } else {
-        toggleOldComments.style.display = 'none';
-      }
-    }
-
-    function addComment(nickname, text) {
-      comments.push({
-        id: Date.now().toString(36) + Math.random().toString(36).slice(2),
-        nickname: nickname.trim() || '',
-        text: text.trim(),
-        timestamp: Date.now()
-      });
-      saveComments();
-      showAllComments = false; // 新增留言后折叠旧留言
-      renderComments();
-    }
-
-    commentForm.addEventListener('submit', function(e) {
-      e.preventDefault();
-      const text = commentText.value.trim();
-      if (!text) { showToast('请输入留言内容','error'); return; }
-      addComment(commentNickname.value, text);
-      commentText.value = '';
-      commentNickname.value = '';
-      showToast('留言发布成功 ✨', 'success');
-    });
-
-    // 初始化留言渲染
-    renderComments();
-
-    // ---------- 管理员等原有逻辑 ----------
     btnAddWork.addEventListener('click', openAddForm);
     btnAdmin.addEventListener('click', () => {
       if (isAdmin) {
@@ -802,10 +641,9 @@
       updateAdminUI();
       formModal.style.display = 'none';
       detailModal.style.display = 'none';
-      renderComments();
     }
     init();
-    console.log('🦢 折纸作品集 (留言版) 已启动');
+    console.log('🦢 折纸作品集已启动');
   })();
 </script>
 </body>
