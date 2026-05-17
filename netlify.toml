@@ -1,4 +1,0 @@
-[[headers]]
-  for = "/admin.html"
-  [headers.values]
-    Basic-Auth = "admin:cqmyg"
